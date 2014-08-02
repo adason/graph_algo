@@ -33,7 +33,9 @@ class Graph(object):
         return str_rep
 
     def dijstra_sd(self, start_vid):
-        """Return a dictory of distance from start vertice to every vertice"""
+        """Return a dictory of shortest distance from start vertice to every
+        vertice using Dijstra Algorithm.
+        """
         shortest_dist = {}  # Keep track of distance of vertices visited
         temp_dist = {}  # Keep track of unvisited vertice temperart distance
         temp_dist[start_vid] = 0
@@ -50,6 +52,32 @@ class Graph(object):
                 update_dist = shortest_dist[current_vid] + edge.weight
                 if temp_dist.get(update_vid) and temp_dist.get(update_vid) > update_dist:
                     temp_dist[update_vid] = update_dist
+
+        return shortest_dist
+
+    def bellman_ford_sd(self, start_vid):
+        """Return a dictory of shortest distance from start vertice to every
+        vertice using Bellman-Ford Algorighm.
+        """
+        n_vertices = len(self.vertices.keys())
+        shortest_dist = {}
+        # Initialize shortest_dist[start_vid] to be 0 and shortest_dist[other_vids] to be 1000000 (infinity)
+        shortest_dist[start_vid] = 0
+        for vid in self.vertices.keys():
+            if vid != start_vid:
+                shortest_dist[vid] = 1000000
+
+        for i in range(1, n_vertices):
+            dist_temp = {}
+            for vid in self.vertices.keys():
+                candidates = [shortest_dist[vid]]
+                for e in self.vertices[vid].incoming_edges():
+                    pred_vid = e.pred.vid
+                    candidates.append(shortest_dist[pred_vid] + e.weight)
+                dist_temp[vid] = min(candidates)
+            if dist_temp == shortest_dist:
+                break
+            shortest_dist = dist_temp
 
         return shortest_dist
 

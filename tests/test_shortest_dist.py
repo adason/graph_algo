@@ -39,6 +39,7 @@ def dijstra_case3():
 
 def test_dijstra_sd_case1(dijstra_case1):
     assert dijstra_case1.dijstra_sd("1") == {"1": 0, "2": 1, "3": 2, "4": 1, "7": 7, "6": 6, "5": 4}
+    assert dijstra_case1.bellman_ford_sd("1") == {"1": 0, "2": 1, "3": 2, "4": 1, "7": 7, "6": 6, "5": 4}
 
 
 def test_dijstra_sd_case2(dijstra_case2):
@@ -62,3 +63,4 @@ def test_dijstra_sd_case3(dijstra_case3):
         "50": 16
     }
     assert dijstra_case3.dijstra_sd("1") == answer
+    assert dijstra_case3.bellman_ford_sd("1") == answer
