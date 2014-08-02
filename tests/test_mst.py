@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Test the other modules in graph_algo"""
+"""Test the MST methods in graph_algo"""
 
 
 from __future__ import unicode_literals
 import pytest
-from graph_algo.mst import MST
+from graph_algo.graph import Graph
 
 
 @pytest.fixture
 def g():
-    g = MST()
+    g = Graph()
     g.add_vertice("1")
     g.add_vertice("2")
     g.add_vertice("3")
