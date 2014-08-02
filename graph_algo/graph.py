@@ -66,8 +66,8 @@ class Graph(object):
         for vid in self.vertices.keys():
             if vid != start_vid:
                 shortest_dist[vid] = 1000000
-
-        for i in range(1, n_vertices):
+        # Check path lengthes from 1 to n-1
+        for i in range(1, n_vertices+1):
             dist_temp = {}
             for vid in self.vertices.keys():
                 candidates = [shortest_dist[vid]]
@@ -76,6 +76,11 @@ class Graph(object):
                     candidates.append(shortest_dist[pred_vid] + e.weight)
                 dist_temp[vid] = min(candidates)
             if dist_temp == shortest_dist:
+                break
+            # Check path length n to detect negative cycle
+            if i == n_vertices and dist_temp != shortest_dist:
+                print("Negative Cycle Detected!!!")
+                shortest_dist = {}
                 break
             shortest_dist = dist_temp
 
