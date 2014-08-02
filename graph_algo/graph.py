@@ -4,6 +4,7 @@
 """
 from __future__ import unicode_literals
 from .vertice_edge import Vertice, Edge
+import os
 
 
 class Graph(object):
@@ -199,7 +200,34 @@ class Graph(object):
         return clusters
 
     @classmethod
-    def read_input_q1(cls, filename):
+    def read_input_part1_hw5(cls, filename):
+        """Read input file in the following format.
+
+        [node_1] [node_a],[cost_a] [node_b],[cost_b]...
+        ...
+
+        This reade as: there exist one edge originated from node_1 to node_a
+        with cost_a, to node_b with cost_b,....
+        """
+        g = cls()
+        n_vertices = os.popen("wc -l {}".format(filename)).read().split()[0]
+        n_vertices = int(n_vertices)
+        for vid in range(1, n_vertices+1):
+            g.add_vertice(str(vid))
+        eid = 1
+        file = open(filename, "r")
+        for line in file:
+            info = line.split()
+            pred_vid = info[0]
+            for edge_info in info[1:]:
+                succ_vid, weight = edge_info.split(",")
+                g.add_edge(str(eid), pred_vid, succ_vid, int(weight))
+                eid += 1
+        file.close()
+        return g
+
+    @classmethod
+    def read_input_part2_hw2_q1(cls, filename):
         """Read input file in the following format.
 
         [number_of_nodes]
@@ -211,6 +239,31 @@ class Graph(object):
         g = cls()
         file = open(filename, "r")
         n_vertices = int(file.readline())
+        for vid in range(1, n_vertices+1):
+            g.add_vertice(str(vid))
+        eid = 1
+        for line in file:
+            pred_vid, succ_vid, weight = line.split()
+            g.add_edge(str(eid), pred_vid, succ_vid, int(weight))
+            eid += 1
+        file.close()
+        return g
+
+    @classmethod
+    def read_input_part2_hw4(cls, filename):
+        """Read input file in the following format.
+
+        [number_of_nodes] [number_of_edges]
+        [edge 1 node 1] [edge 1 node 2] [edge 1 cost]
+        [edge 2 node 1] [edge 2 node 2] [edge 2 cost]
+        ...
+
+        """
+        g = cls()
+        file = open(filename, "r")
+        n_vertices, n_edges = file.readline().split()
+        n_vertices = int(n_vertices)
+        n_edges = int(n_edges)
         for vid in range(1, n_vertices+1):
             g.add_vertice(str(vid))
         eid = 1
