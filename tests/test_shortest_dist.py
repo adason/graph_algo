@@ -24,22 +24,17 @@ def test_dijstra_sd(g):
 
 @pytest.fixture
 def dijstra_case1():
-    return Graph.read_input_part1_hw5("testcases/dijstra_part1_hw5_case1.txt")
-
-
-@pytest.fixture
-def dijstra_case2():
-    return Graph.read_input_part1_hw5("testcases/dijstra_part1_hw5_case2.txt")
-
-
-@pytest.fixture
-def dijstra_case3():
-    return Graph.read_input_part1_hw5("testcases/dijstra_part1_hw5_case3.txt")
+    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case1.txt")
 
 
 def test_dijstra_sd_case1(dijstra_case1):
     assert dijstra_case1.dijstra_sd("1") == {"1": 0, "2": 1, "3": 2, "4": 1, "7": 7, "6": 6, "5": 4}
     assert dijstra_case1.bellman_ford_sd("1") == {"1": 0, "2": 1, "3": 2, "4": 1, "7": 7, "6": 6, "5": 4}
+
+
+@pytest.fixture
+def dijstra_case2():
+    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case2.txt")
 
 
 def test_dijstra_sd_case2(dijstra_case2):
@@ -49,6 +44,11 @@ def test_dijstra_sd_case2(dijstra_case2):
     assert dist["10"] == 18
     assert dist["11"] == 24
     assert dist["13"] == 21
+
+
+@pytest.fixture
+def dijstra_case3():
+    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case3.txt")
 
 
 def test_dijstra_sd_case3(dijstra_case3):
@@ -64,3 +64,33 @@ def test_dijstra_sd_case3(dijstra_case3):
     }
     assert dijstra_case3.dijstra_sd("1") == answer
     assert dijstra_case3.bellman_ford_sd("1") == answer
+
+
+@pytest.fixture
+def apsp_case1():
+    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case1.txt")
+
+
+def test_apsp_case1(apsp_case1):
+    dist_pairs = apsp_case1.floyd_warshall_apsp()
+    assert apsp_case1.min_dist(dist_pairs) == {("4", "1"): -2}
+
+
+@pytest.fixture
+def apsp_case2():
+    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case2.txt")
+
+
+def test_apsp_case2(apsp_case2):
+    dist_pairs = apsp_case2.floyd_warshall_apsp()
+    assert apsp_case2.min_dist(dist_pairs) == {("11", "14"): -9}
+
+
+@pytest.fixture
+def apsp_case3():
+    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case3.txt")
+
+
+def test_apsp_case3(apsp_case3):
+    dist_pairs = apsp_case3.floyd_warshall_apsp()
+    assert not apsp_case3.min_dist(dist_pairs)

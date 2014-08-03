@@ -71,9 +71,9 @@ class Graph(object):
             dist_temp = {}
             for vid in self.vertices.keys():
                 candidates = [shortest_dist[vid]]
-                for e in self.vertices[vid].incoming_edges():
-                    pred_vid = e.pred.vid
-                    candidates.append(shortest_dist[pred_vid] + e.weight)
+                for edge in self.vertices[vid].incoming_edges():
+                    pred_vid = edge.pred.vid
+                    candidates.append(shortest_dist[pred_vid] + edge.weight)
                 dist_temp[vid] = min(candidates)
             if dist_temp == shortest_dist:
                 break
@@ -85,6 +85,64 @@ class Graph(object):
             shortest_dist = dist_temp
 
         return shortest_dist
+
+    def floyd_warshall_apsp(self):
+        """Floyd-Warshall All Pairs Shortest Distance Algorithm
+
+        Returns:
+            A dictionary of shortest distance pairs, such as:
+
+                {(vid_a, vid_b): dist_ab, (vid_c, vid_d): dist_cd,...}
+            If an negative cycle is detected, an empty dictionary is returned.
+        """
+        dist_pairs = {}
+        # Initialize the dist pairs
+        for vid in self.vertices.keys():
+            dist_pairs[(vid, vid)] = 0
+        for edge in self.edges.values():
+            pred = edge.pred.vid
+            succ = edge.succ.vid
+            if (pred, succ) in dist_pairs:
+                dist_pairs[(pred, succ)] = min([dist_pairs[(pred, succ)], edge.weight])
+            else:
+                dist_pairs[(pred, succ)] = edge.weight
+        for vid_i in self.vertices.keys():
+            for vid_j in self.vertices.keys():
+                if (vid_i, vid_j) not in dist_pairs:
+                    dist_pairs[(vid_i, vid_j)] = 1000000
+
+        # Recursion
+        for vid_k in self.vertices.keys():
+            dist_pairs_temp = {}
+            for vid_i in self.vertices.keys():
+                for vid_j in self.vertices.keys():
+                    candidates = [
+                        dist_pairs[(vid_i, vid_j)],
+                        dist_pairs[(vid_i, vid_k)] + dist_pairs[(vid_k, vid_j)]
+                    ]
+                    dist_pairs_temp[(vid_i, vid_j)] = min(candidates)
+            dist_pairs = dist_pairs_temp
+
+        # Check Negative Cycles
+        for vid in self.vertices.keys():
+            if dist_pairs[(vid, vid)] < 0:
+                print("Negative Cycle Detected!!!")
+                dist_pairs = {}
+                break
+
+        return dist_pairs
+
+    def min_dist(self, dist_pairs):
+        """Compute the minimum distance among all pairs of shortest distances.
+
+        Returns:
+            {(vid_a, vid_b): dist}
+        """
+        if dist_pairs == {}:
+            return None
+        else:
+            min_key = min(dist_pairs.keys(), key=lambda k: (dist_pairs[k], k))
+            return {min_key: dist_pairs[min_key]}
 
     def mst_prim(self, start_vid="1"):
         """Use Prim's Algorighm to find the minimum spanning tree"""
