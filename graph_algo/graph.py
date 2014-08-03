@@ -95,42 +95,43 @@ class Graph(object):
                 {(vid_a, vid_b): dist_ab, (vid_c, vid_d): dist_cd,...}
             If an negative cycle is detected, an empty dictionary is returned.
         """
-        dist_pairs = {}
+        n_vertices = len(self.vertices.keys())
         # Initialize the dist pairs
-        for vid in self.vertices.keys():
-            dist_pairs[(vid, vid)] = 0
+        dist_pairs = [[0 for i in range(n_vertices+1)] for j in range(n_vertices+1)]
+        edge_pairs = {}
         for edge in self.edges.values():
-            pred = edge.pred.vid
-            succ = edge.succ.vid
-            if (pred, succ) in dist_pairs:
-                dist_pairs[(pred, succ)] = min([dist_pairs[(pred, succ)], edge.weight])
-            else:
-                dist_pairs[(pred, succ)] = edge.weight
-        for vid_i in self.vertices.keys():
-            for vid_j in self.vertices.keys():
-                if (vid_i, vid_j) not in dist_pairs:
-                    dist_pairs[(vid_i, vid_j)] = 1000000
+            pred = int(edge.pred.vid)
+            succ = int(edge.succ.vid)
+            edge_pairs[(pred, succ)] = edge.weight
+        for vid_i in range(1, n_vertices+1):
+            for vid_j in range(1, n_vertices+1):
+                if (vid_i, vid_j) in edge_pairs:
+                    dist_pairs[vid_i][vid_j] = edge_pairs[(vid_i, vid_j)]
+                elif vid_i != vid_j:
+                    dist_pairs[vid_i][vid_j] = 1000000
 
         # Recursion
-        for vid_k in self.vertices.keys():
-            dist_pairs_temp = {}
-            for vid_i in self.vertices.keys():
-                for vid_j in self.vertices.keys():
+        for vid_k in range(1, n_vertices+1):
+            print(1.0*vid_k/n_vertices)
+            dist_pairs_temp = [[0 for i in range(n_vertices+1)] for j in range(n_vertices+1)]
+            for vid_i in range(1, n_vertices+1):
+                for vid_j in range(1, n_vertices+1):
                     candidates = [
-                        dist_pairs[(vid_i, vid_j)],
-                        dist_pairs[(vid_i, vid_k)] + dist_pairs[(vid_k, vid_j)]
+                        dist_pairs[vid_i][vid_j],
+                        dist_pairs[vid_i][vid_k] + dist_pairs[vid_k][vid_j]
                     ]
-                    dist_pairs_temp[(vid_i, vid_j)] = min(candidates)
+                    dist_pairs_temp[vid_i][vid_j] = min(candidates)
+                    # Check Negative Cycles
+                    if vid_i == vid_j and dist_pairs_temp[vid_i][vid_j] < 0:
+                        print("Negative Cycle Detected!!!")
+                        return {}
             dist_pairs = dist_pairs_temp
 
-        # Check Negative Cycles
-        for vid in self.vertices.keys():
-            if dist_pairs[(vid, vid)] < 0:
-                print("Negative Cycle Detected!!!")
-                dist_pairs = {}
-                break
-
-        return dist_pairs
+        rt_dist_pairs = {}
+        for vid_i in range(1, n_vertices+1):
+            for vid_j in range(1, n_vertices+1):
+                rt_dist_pairs[(str(vid_i), str(vid_j))] = dist_pairs[vid_i][vid_j]
+        return rt_dist_pairs
 
     def min_dist(self, dist_pairs):
         """Compute the minimum distance among all pairs of shortest distances.
