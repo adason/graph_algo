@@ -112,7 +112,8 @@ class Graph(object):
 
         # Recursion
         for vid_k in range(1, n_vertices+1):
-            print(1.0*vid_k/n_vertices)
+            # progress = 1.0*vid_k/n_vertices
+            # print("{}%".format(progress*100))
             dist_pairs_temp = [[0 for i in range(n_vertices+1)] for j in range(n_vertices+1)]
             for vid_i in range(1, n_vertices+1):
                 for vid_j in range(1, n_vertices+1):
