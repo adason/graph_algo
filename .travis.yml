@@ -2,12 +2,12 @@
 
 language: python
 
-python: 2.7
-  - TOX_ENV=py27
-  - TOX_ENV=py34
+python:
+  - "2.7"
+  - "3.4"
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: pip install -U .
 
 # command to run tests, e.g. python setup.py test
-script: tox -e $TOX_ENV
+script: py.test

@@ -4,6 +4,9 @@
 from __future__ import unicode_literals
 import pytest
 from graph_algo.graph import Graph
+from os import path
+
+file_dir = path.dirname(path.abspath(__file__))
 
 
 @pytest.fixture
@@ -24,7 +27,7 @@ def test_dijstra_sd(g):
 
 @pytest.fixture
 def dijstra_case1():
-    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case1.txt")
+    return Graph.read_input_part1_hw5(path.join(file_dir, "testcases/part1_hw5_dijstra_case1.txt"))
 
 
 def test_dijstra_sd_case1(dijstra_case1):
@@ -34,7 +37,7 @@ def test_dijstra_sd_case1(dijstra_case1):
 
 @pytest.fixture
 def dijstra_case2():
-    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case2.txt")
+    return Graph.read_input_part1_hw5(path.join(file_dir, "testcases/part1_hw5_dijstra_case2.txt"))
 
 
 def test_dijstra_sd_case2(dijstra_case2):
@@ -48,7 +51,7 @@ def test_dijstra_sd_case2(dijstra_case2):
 
 @pytest.fixture
 def dijstra_case3():
-    return Graph.read_input_part1_hw5("testcases/part1_hw5_dijstra_case3.txt")
+    return Graph.read_input_part1_hw5(path.join(file_dir, "testcases/part1_hw5_dijstra_case3.txt"))
 
 
 def test_dijstra_sd_case3(dijstra_case3):
@@ -68,7 +71,7 @@ def test_dijstra_sd_case3(dijstra_case3):
 
 @pytest.fixture
 def apsp_case1():
-    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case1.txt")
+    return Graph.read_input_part2_hw4(path.join(file_dir, "testcases/part2_hw4_apsp_case1.txt"))
 
 
 def test_apsp_case1(apsp_case1):
@@ -78,7 +81,7 @@ def test_apsp_case1(apsp_case1):
 
 @pytest.fixture
 def apsp_case2():
-    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case2.txt")
+    return Graph.read_input_part2_hw4(path.join(file_dir, "testcases/part2_hw4_apsp_case2.txt"))
 
 
 def test_apsp_case2(apsp_case2):
@@ -88,7 +91,7 @@ def test_apsp_case2(apsp_case2):
 
 @pytest.fixture
 def apsp_case3():
-    return Graph.read_input_part2_hw4("testcases/part2_hw4_apsp_case3.txt")
+    return Graph.read_input_part2_hw4(path.join(file_dir, "testcases/part2_hw4_apsp_case3.txt"))
 
 
 def test_apsp_case3(apsp_case3):
