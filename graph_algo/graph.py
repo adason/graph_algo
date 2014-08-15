@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Basic Struceture of an Undirected Graph
+"""Basic Struceture of an directed Graph
 
 """
 from __future__ import unicode_literals
@@ -31,6 +31,36 @@ class Graph(object):
         for eid in sorted(self.edges.keys()):
             str_rep += "{}\n".format(self.edges[eid])
         return str_rep
+
+    def dfs(self, start_vid):
+        """Depth-first search
+        Return a genertaor of vertice vids
+        """
+        vid_stack = [start_vid]
+        visited = set()
+        while vid_stack:
+            current_vid = vid_stack.pop()
+            if current_vid not in visited:
+                yield current_vid
+                visited.add(current_vid)
+                for edge in self.vertices[current_vid].outgoing_edges():
+                    succ = edge.succ.vid
+                    vid_stack.append(succ)
+
+    def bfs(self, start_vid):
+        """Breadth-first search
+        Return a generator of vertice vids
+        """
+        vid_queue = [start_vid]
+        visited = set()
+        while vid_queue:
+            current_vid = vid_queue.pop(0)
+            if current_vid not in visited:
+                yield current_vid
+                visited.add(current_vid)
+                for edge in self.vertices[current_vid].outgoing_edges():
+                    succ = edge.succ.vid
+                    vid_queue.append(succ)
 
     def dijstra_sd(self, start_vid):
         """Return a dictory of shortest distance from start vertice to every
