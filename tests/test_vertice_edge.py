@@ -24,11 +24,11 @@ def sg():
 
 
 def test_v1_outgoing(sg):
-    assert sg.v1.outgoing_edges() == [sg.e1]
+    assert list(sg.v1.outgoing_edges()) == [sg.e1]
 
 
 def test_v2_incoming(sg):
-    assert sg.v2.incoming_edges() == [sg.e1]
+    assert list(sg.v2.incoming_edges()) == [sg.e1]
 
 
 def test_v1_print(sg):

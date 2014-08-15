@@ -9,16 +9,20 @@ class Vertice(object):
 
     def __init__(self, vid):
         self.vid = vid
-        self.edges = set()
+        self.edges = []
 
     def attach_edge(self, edge):
-        self.edges.add(edge)
+        self.edges.append(edge)
 
     def outgoing_edges(self):
-        return [e for e in self.edges if e.pred.vid == self.vid]
+        for e in self.edges:
+            if e.pred.vid == self.vid:
+                yield e
 
     def incoming_edges(self):
-        return [e for e in self.edges if e.succ.vid == self.vid]
+        for e in self.edges:
+            if e.succ.vid == self.vid:
+                yield e
 
     def __str__(self):
         out_eids = [e.eid for e in self.outgoing_edges()]
