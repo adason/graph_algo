@@ -50,6 +50,9 @@ class Edge(object):
     def vertices(self):
         return [self.pred, self.succ]
 
+    def reverse(self):
+        self.pred, self.succ = self.succ, self.pred
+
     def __str__(self):
         rtn_str = "eid: {0}; vids: {1} {2}; weight: {3}"
         return rtn_str.format(self.eid, self.pred.vid, self.succ.vid, self.weight)

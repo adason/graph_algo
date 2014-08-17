@@ -58,3 +58,8 @@ def test_dfs(g2):
 
 def test_bfs(g2):
     assert list(g2.bfs("1")) == ["1", "2", "3", "5", "6", "4"]
+
+
+def test_finish_time_dfs(g2):
+    assert list(g2.finish_time_dfs("1")) == ["4", "5", "3", "6", "2", "1"]
+

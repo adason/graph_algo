@@ -43,8 +43,9 @@ class Graph(object):
             if current_vid not in visited:
                 yield current_vid
                 visited.add(current_vid)
-                for edge in self.vertices[current_vid].outgoing_edges():
-                    succ = edge.succ.vid
+            for edge in self.vertices[current_vid].outgoing_edges():
+                succ = edge.succ.vid
+                if succ not in visited:
                     vid_stack.append(succ)
 
     def bfs(self, start_vid):
@@ -61,6 +62,57 @@ class Graph(object):
                 for edge in self.vertices[current_vid].outgoing_edges():
                     succ = edge.succ.vid
                     vid_queue.append(succ)
+
+    def finish_time_dfs(self, start_vid):
+        """Depth-first search ordered according to finish time
+        Return a genertaor of vertice vids
+        """
+        vid_stack = [start_vid]
+        visited = set()
+        while vid_stack:
+            current_vid = vid_stack[-1]
+            visited.add(current_vid)
+            no_children = True
+            for edge in self.vertices[current_vid].outgoing_edges():
+                succ = edge.succ.vid
+                if succ not in visited:
+                    vid_stack.append(succ)
+                    visited.add(succ)
+                    no_children = False
+            if no_children:
+                yield vid_stack.pop()
+
+    def kosaraju_sccs(self):
+        """ Kosaraju's Self-Connected Components Algorithm
+        """
+        # Pass 1; Perform depth first search of the original graph starting form
+        # every unvisited vertices to identify the magic ordering of vertices.
+        vid_magic_order = []
+        visited = set()
+        for vid in self.vertices.keys():
+            if vid in visited:
+                continue
+            for vid_dfs in self.finish_time_dfs(vid):
+                if vid_dfs not in visited:
+                    visited.add(vid_dfs)
+                    vid_magic_order.append(vid_dfs)
+
+        # Pass 2; Identify sccs using the reversed graph and the reversed
+        # magic ordering of vertices. Return a generator of a list of vids
+        # that belong to the same sccs.
+        for edge in self.edges.values():
+            edge.reverse()
+        visited = set()
+        for vid in reversed(vid_magic_order):
+            if vid in visited:
+                continue
+            else:
+                scc_vids = []
+            for vid_dfs in self.dfs(vid):
+                if vid_dfs not in visited:
+                    visited.add(vid_dfs)
+                    scc_vids.append(vid_dfs)
+            yield scc_vids
 
     def dijstra_sd(self, start_vid):
         """Return a dictory of shortest distance from start vertice to every
@@ -321,6 +373,32 @@ class Graph(object):
                 clusters[leader] = set([vid])
 
         return clusters
+
+    @classmethod
+    def read_input_part1_hw4(cls, filename):
+        """Reqd input file in the following format.
+
+        [n_vertices]
+        [Node_a] [Node_b]
+        [Node_c] [Node_d]
+        ...
+
+        This format reads as:
+        There are total of n_vertices in this graph. For this graph,
+        there exists one edge originated from a to b, c to d and so on...
+        """
+        g = cls()
+        file = open(filename, "r")
+        n_vertices = int(file.readline())
+        for vid in range(1, n_vertices+1):
+            g.add_vertice(str(vid))
+        eid = 1
+        for line in file:
+            pred_vid, succ_vid = line.split()
+            g.add_edge(str(eid), pred_vid, succ_vid)
+            eid += 1
+        file.close()
+        return g
 
     @classmethod
     def read_input_part1_hw5(cls, filename):
