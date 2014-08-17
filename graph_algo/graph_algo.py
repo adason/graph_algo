@@ -4,7 +4,9 @@
 Usage:
     graph_algo -h
     graph_algo --version
+    graph_algo p1hw4 [-v] -i <file>
     graph_algo p2hw4 [--argo <argo>] [-v] -i <file>...
+    graph_algo p2hw6 [-v] -i <file>...
 
 Options:
     -h --help                show this help message and exit
@@ -32,7 +34,14 @@ def main():
     args = docopt(__doc__, version=__version__)
     # print(args)
 
-    if args["p2hw4"]:
+    if args["p1hw4"]:
+        g = Graph.read_input_part1_hw4(args["--input"][0])
+        sizes = []
+        for scc in g.kosaraju_sccs():
+            sizes.append(len(scc))
+        print(sorted(sizes, reverse=True))
+
+    elif args["p2hw4"]:
         min_dists = []
         for fn in args["--input"]:
             g = Graph.read_input_part2_hw4(fn)
@@ -43,3 +52,17 @@ def main():
             print(min(min_dists))
         else:
             print("NULL")
+
+    elif args["p2hw6"]:
+        for fn in args["--input"]:
+            g = Graph.read_input_part2_hw6(fn)
+            sol_status = 1
+            for scc in g.kosaraju_sccs():
+                scc_vids = set(scc)
+                for vid in scc:
+                    if str(-int(vid)) in scc_vids:
+                        sol_status = 0
+                        break
+                if sol_status == 0:
+                    break
+            print(sol_status, end="")

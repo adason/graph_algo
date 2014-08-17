@@ -43,6 +43,8 @@ class Graph(object):
             if current_vid not in visited:
                 yield current_vid
                 visited.add(current_vid)
+            else:
+                continue
             for edge in self.vertices[current_vid].outgoing_edges():
                 succ = edge.succ.vid
                 if succ not in visited:
@@ -87,6 +89,7 @@ class Graph(object):
         """
         # Pass 1; Perform depth first search of the original graph starting form
         # every unvisited vertices to identify the magic ordering of vertices.
+        # print("PASS1")
         vid_magic_order = []
         visited = set()
         for vid in self.vertices.keys():
@@ -100,6 +103,7 @@ class Graph(object):
         # Pass 2; Identify sccs using the reversed graph and the reversed
         # magic ordering of vertices. Return a generator of a list of vids
         # that belong to the same sccs.
+        # print("PASS2")
         for edge in self.edges.values():
             edge.reverse()
         visited = set()
@@ -474,3 +478,47 @@ class Graph(object):
             eid += 1
         file.close()
         return g
+
+    @classmethod
+    def read_input_part2_hw6(cls, filename):
+        """Reqd input file of a 2-set problem in the following format
+
+        [n_variables]
+        [var_a] [var_b]
+        [var_c] [var_d]
+        ...
+
+        The file format is as follows. In each instance, the number of variables
+        and the number of clauses is the same, and this number is specified
+        on the first line of the file. Each subsequent line specifies a clause
+        via its two literals, with a number denoting the variable and a "-" sign
+        denoting logical "not".
+
+        For example, the second line of the first data file is "-16808 75250",
+        which indicates the clause ¬x16808 ∨ x75250.
+
+        Return the graph representation of such 2-set problem.
+
+        """
+        g = cls()
+        file = open(filename, "r")
+        n_vertices = int(file.readline())
+        for vid in range(1, n_vertices+1):
+            g.add_vertice(str(vid))
+            g.add_vertice(str(-vid))
+        edge_pairs = set()
+        for line in file:
+            pred_vid, succ_vid = line.split()
+            edge_pairs.add((str(-int(pred_vid)), succ_vid))
+            edge_pairs.add((str(-int(succ_vid)), pred_vid))
+        file.close()
+        eid = 1
+        for pair in edge_pairs:
+            pred_vid, succ_vid = pair
+            g.add_edge(str(eid), pred_vid, succ_vid)
+            eid += 1
+        for vid in g.vertices.keys():
+            if len(g.vertices[vid].edges) == 0:
+                del g.vertices[vid]
+        return g
+
